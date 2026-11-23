@@ -52,7 +52,9 @@ create policy "public read images" on storage.objects for select using (bucket_i
 create policy "admin upload images" on storage.objects for insert to authenticated with check (bucket_id = 'products');
 
 -- website settings (background choice)
-create table settings(key text primary key, value text not null);
-alter table settings enable row level security;
-create policy "read settings" on settings for select using (true);
-create policy "admin settings" on settings for all to authenticated using (true) with check (true);
+
+-- table permissions (needed on newer Supabase projects, otherwise: "permission denied for table")
+grant usage on schema public to anon, authenticated;
+grant select on public.products, public.reels, public.reviews to anon;
+grant insert on public.orders, public.reviews to anon;
+grant select, insert, update, delete on public.products, public.reels, public.reviews, public.orders to authenticated;
