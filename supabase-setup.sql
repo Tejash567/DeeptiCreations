@@ -12,6 +12,7 @@ create table products(
   image_url text not null,
   images text[] default '{}',
   cutout_url text,
+  is_new boolean default false,
   in_stock boolean default true,
   created_at timestamptz default now());
 

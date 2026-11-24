@@ -2,6 +2,7 @@
 -- It gives the website's roles permission to use the tables. (Row rules from supabase-setup.sql still apply.)
 alter table products add column if not exists images text[] default '{}';
 alter table products add column if not exists cutout_url text;
+alter table products add column if not exists is_new boolean default false;
 alter table reels add column if not exists product_id text;
 
 -- table permissions (needed on newer Supabase projects, otherwise: "permission denied for table")
