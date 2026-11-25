@@ -15,7 +15,7 @@ Keep the assets folder next to index.html.
 4. Upload the folder again.
 
 ## Admin
-yoursite.com/#admin: Products (several photos + optional sticker cutout), Orders, Reviews, Reels.
+yoursite.com/#admin: Products (several photos, New arrival toggle, automatic Product ID), Orders, Reviews, Reels (upload a video: it autoplays muted).
 
 ## Policies
 Privacy Policy and Return & Refund Policy text is in index.html (search for "const POL"). Please read it and change the return window, refund time and anything else to match how the store really works.

@@ -28,3 +28,12 @@ insert into storage.buckets (id, name, public) values ('products','products',tru
 drop policy if exists "public read images" on storage.objects; create policy "public read images" on storage.objects for select using (bucket_id = 'products');
 drop policy if exists "admin upload images" on storage.objects; create policy "admin upload images" on storage.objects for insert to authenticated with check (bucket_id = 'products');
 drop policy if exists "admin manage images" on storage.objects; create policy "admin manage images" on storage.objects for all to authenticated using (bucket_id = 'products') with check (bucket_id = 'products');
+
+-- reels: autoplay videos (uploaded from the admin panel)
+alter table reels add column if not exists video_url text;
+alter table reels add column if not exists poster_url text;
+alter table reels alter column url drop not null;
+insert into storage.buckets (id, name, public, file_size_limit) values ('reels','reels',true,52428800)
+  on conflict (id) do update set public = true, file_size_limit = 52428800;
+drop policy if exists "public read reels" on storage.objects; create policy "public read reels" on storage.objects for select using (bucket_id = 'reels');
+drop policy if exists "admin manage reels" on storage.objects; create policy "admin manage reels" on storage.objects for all to authenticated using (bucket_id = 'reels') with check (bucket_id = 'reels');

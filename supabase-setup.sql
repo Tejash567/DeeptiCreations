@@ -16,7 +16,7 @@ create table products(
   in_stock boolean default true,
   created_at timestamptz default now());
 
-create table reels(id uuid primary key default gen_random_uuid(), url text not null, product_id text, created_at timestamptz default now());
+create table reels(id uuid primary key default gen_random_uuid(), url text, video_url text, poster_url text, product_id text, created_at timestamptz default now());
 
 create table reviews(
   id uuid primary key default gen_random_uuid(),
@@ -59,3 +59,8 @@ grant usage on schema public to anon, authenticated;
 grant select on public.products, public.reels, public.reviews to anon;
 grant insert on public.orders, public.reviews to anon;
 grant select, insert, update, delete on public.products, public.reels, public.reviews, public.orders to authenticated;
+
+-- reel videos
+insert into storage.buckets (id, name, public, file_size_limit) values ('reels','reels',true,52428800);
+create policy "public read reels" on storage.objects for select using (bucket_id = 'reels');
+create policy "admin manage reels" on storage.objects for all to authenticated using (bucket_id = 'reels') with check (bucket_id = 'reels');
