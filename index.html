@@ -334,6 +334,11 @@ body:has(#pp.on) #ts{bottom:calc(86px + env(safe-area-inset-bottom))}
 .rnv{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;color:#F1E0BC;text-decoration:none;font:500 14px var(--ui);letter-spacing:.04em;background:var(--pat),linear-gradient(165deg,#6b2438,#3A1220)}
 .rnv .ic{width:44px;height:44px}
 .rp{padding:10px 12px}
+.rgrid{align-items:flex-start}
+.rv.rcv .rbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rv.rcv::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,10,18,.3),rgba(40,10,18,.1) 42%,rgba(30,8,14,.62));z-index:1}
+.rv.rcv .rnv{background:none}.rnv{z-index:2;text-shadow:0 1px 8px rgba(0,0,0,.45)}
+.rpb2{width:62px;height:62px;border-radius:18px;background:rgba(255,252,246,.94);color:var(--rust);display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .25s}.rpb2 .ic{width:28px;height:28px}.rnv:hover .rpb2{transform:scale(1.08)}
 @media(max-width:700px){.rl{flex-basis:min(250px,70vw)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}.hero .in>*,.pi,.pcap{opacity:1!important}.arch{clip-path:none!important;opacity:1!important}.rv0{opacity:1;transform:none}}
 
@@ -419,9 +424,9 @@ else{G.onclick=()=>openGate(false);$('sk').onclick=e=>{e.stopPropagation();openG
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>/* ====== CONFIG: fill these in ====== */
 const CFG={
-  SUPABASE_URL:'https://yhnmleomwskoqwdphqxk.supabase.co',   // https://xxxx.supabase.co
-  SUPABASE_KEY:'sb_publishable_HSefk3bit4X1jDGkgqMMMA_FrEwNPdK',   // anon public key
-  MAP_EMBED_URL:'https://www.google.com/maps/place/Deepti+Family+Wears/@29.809358,77.7739653,752m/data=!3m2!1e3!4b1!4m6!3m5!1s0x390eb05b5fd65acf:0x57315a32b0000000!8m2!3d29.809358!4d77.7739653!16s%2Fg%2F11rsslq2sr?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D',  // Google Maps "Embed a map" src
+  SUPABASE_URL:'',   // https://xxxx.supabase.co
+  SUPABASE_KEY:'',   // anon public key
+  MAP_EMBED_URL:'',  // Google Maps "Embed a map" src
   WA:'918534950841',
   IG:'https://www.instagram.com/deepticreation27/'
 };
@@ -573,7 +578,7 @@ function reelCard(r){
   const p=r.product_id?P.find(x=>x.product_id===r.product_id):null,ig=r.url&&/instagram\.com/.test(r.url)?r.url:'';
   let vw;
   if(r.video_url)vw=`<div class="rv${canAuto?'':' ask'}"><video muted loop playsinline preload="none" ${r.poster_url?`poster="${esc(r.poster_url)}"`:''} data-src="${esc(r.video_url)}"></video><i class="rpb"><b></b></i><button class="rpl" aria-label="Play">${PLAYI}</button><button class="rmu" aria-label="Sound">${SPK}</button>${ig?`<a class="rig" href="${esc(ig)}" target="_blank" rel="noopener" aria-label="Open on Instagram">${IGI}</a>`:''}</div>`;
-  else if(ig)vw=`<div class="rv"><a class="rnv" href="${esc(ig)}" target="_blank" rel="noopener">${IGI}<span>Watch on Instagram</span></a></div>`;
+  else if(ig){const cv=r.poster_url||(p&&p.image_url)||'';vw=`<div class="rv${cv?' rcv':''}">${cv?`<img class="rbg" alt="" loading="lazy" src="${esc(cv)}">`:''}<a class="rnv" href="${esc(ig)}" target="_blank" rel="noopener"><i class="rpb2">${PLAYI}</i><span>Watch on Instagram</span></a></div>`}
   else return '';
   const strip=p?`<div class="rp"><button class="rt" data-o="${p.id}"><img alt="" loading="lazy" src="${esc(p.image_url)}"></button><button class="rn" data-o="${p.id}"><b>${esc(p.name)}</b><span>${fm(p.price)} · ID ${esc(p.product_id)}</span></button>${p.in_stock===false?'':`<button class="bag" data-b="${p.id}" aria-label="Add to cart">${BAG}</button>`}</div>`:'';
   return `<article class="rl">${vw}${strip}</article>`}
@@ -756,8 +761,9 @@ async function aReels(){
   $('atab').innerHTML=`<div class="af"><h3>Add a reel</h3>
   <label>Reel video <small>MP4 (H.264) works on every phone, up to 50 MB. It plays by itself, without sound. iPhone .mov files may not play everywhere.</small><input type="file" id="rv_f" accept="video/*"></label>
   <label>Instagram link <small>optional, adds an Instagram button on the reel</small><input id="ru" placeholder="https://www.instagram.com/reel/..."></label>
+  <label>Cover image <small>optional, shown for Instagram-only reels (a screenshot of the reel works)</small><input type="file" id="rc_f" accept="image/*"></label>
   <label>Product shown in this reel <small>optional, lets visitors add it to the cart from the reel</small><select id="rp"><option value="">None</option>${(pp||[]).map(x=>`<option value="${esc(x.product_id)}">${esc(x.product_id)} · ${esc(x.name)}</option>`).join('')}</select></label>
-  <div class="ab"><button class="ok" id="ra">Add reel</button></div><div class="am bad" id="rmsg" ${le?'':'hidden'}>${le?esc(hint(le)):''}</div></div>`+(data||[]).map(r=>`<div class="ar">${r.poster_url?`<img src="${esc(r.poster_url)}" alt="">`:`<div style="width:46px;height:58px;border-radius:8px;background:var(--sage);display:grid;place-items:center;font-size:11px;color:var(--mut);text-align:center">${r.video_url?'Video':'Link'}</div>`}<div class="an"><b style="word-break:break-all;font-size:13px">${esc(r.url||'Video reel')}</b><span>${r.video_url?'Plays automatically':'Instagram link only. Add a video so it plays by itself.'} · ${esc(r.product_id||'No product linked')}</span></div><div class="ab">${r.video_url?'':`<button data-av="${r.id}">Add video</button>`}<button data-d="${r.id}">Delete</button></div></div>`).join('');
+  <div class="ab"><button class="ok" id="ra">Add reel</button></div><div class="am bad" id="rmsg" ${le?'':'hidden'}>${le?esc(hint(le)):''}</div></div>`+(data||[]).map(r=>`<div class="ar">${r.poster_url?`<img src="${esc(r.poster_url)}" alt="">`:`<div style="width:46px;height:58px;border-radius:8px;background:var(--sage);display:grid;place-items:center;font-size:11px;color:var(--mut);text-align:center">${r.video_url?'Video':'Link'}</div>`}<div class="an"><b style="word-break:break-all;font-size:13px">${esc(r.url||'Video reel')}</b><span>${r.video_url?'Plays automatically':'Instagram link only. Add a video so it plays by itself.'} · ${esc(r.product_id||'No product linked')}</span></div><div class="ab">${r.video_url?'':`<button data-av="${r.id}">Add video</button>${r.poster_url?'':`<button data-ac="${r.id}">Add cover</button>`}`}<button data-d="${r.id}">Delete</button></div></div>`).join('');
   const warn=t=>{const m=$('rmsg');m.textContent=t;m.hidden=false};
   async function upVideo(f){
     if(f.size>50*1024*1024)throw new Error('This video is '+(f.size/1048576).toFixed(0)+' MB. Please keep it under 50 MB (record or export in 720p).');
@@ -767,15 +773,17 @@ async function aReels(){
     try{const bl=await posterOf(f);if(bl){const pu=await sb.storage.from('reels').upload('p-'+id+'.jpg',bl,{contentType:'image/jpeg'});if(!pu.error)poster_url=sb.storage.from('reels').getPublicUrl('p-'+id+'.jpg').data.publicUrl}}catch(_){}
     return {video_url,poster_url}}
   function posterOf(f){return new Promise(res=>{const v=document.createElement('video'),u=URL.createObjectURL(f);v.muted=true;v.playsInline=true;v.preload='auto';v.src=u;const done=b=>{URL.revokeObjectURL(u);res(b)};v.onerror=()=>done(null);v.onloadeddata=()=>{v.currentTime=Math.min(.6,(v.duration||1)/2)};v.onseeked=()=>{const k=Math.min(1,720/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement('canvas');c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);c.toBlob(done,'image/jpeg',.82)};setTimeout(()=>done(null),8000)})}
+  async function upCover(f){const bl=await shrink(f,900,'image/jpeg'),id=Date.now()+'-'+Math.random().toString(36).slice(2,6);const u=await sb.storage.from('reels').upload('c-'+id+'.jpg',bl,{contentType:'image/jpeg'});if(u.error)throw u.error;return sb.storage.from('reels').getPublicUrl('c-'+id+'.jpg').data.publicUrl}
   $('ra').onclick=async()=>{const f=$('rv_f').files[0],link=$('ru').value.trim();
     if(!f&&!link)return warn('Add a video, an Instagram link, or both.');
     if(link&&!/instagram\.com\/(reel|reels|p)\//.test(link))return warn('That does not look like an Instagram reel link.');
     $('ra').disabled=true;$('ra').textContent='Uploading…';
-    try{const v=f?await upVideo(f):{};const r=await sb.from('reels').insert({url:link||null,product_id:$('rp').value||null,...v});if(r.error)throw r.error;admin()}
+    try{const cf=$('rc_f').files[0];const v=f?await upVideo(f):(cf?{poster_url:await upCover(cf)}:{});const r=await sb.from('reels').insert({url:link||null,product_id:$('rp').value||null,...v});if(r.error)throw r.error;admin()}
     catch(er){$('ra').disabled=false;$('ra').textContent='Add reel';warn(hint(er))}};
   $('atab').onclick=e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.d)del('reels',b.dataset.d);
-    else if(b.dataset.av){const inp=document.createElement('input');inp.type='file';inp.accept='video/*';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;b.textContent='Uploading…';b.disabled=true;try{const v=await upVideo(f);const r=await sb.from('reels').update(v).eq('id',b.dataset.av);if(r.error)throw r.error;admin()}catch(er){b.disabled=false;b.textContent='Add video';warn(hint(er))}};inp.click()}};
+    else if(b.dataset.av){const inp=document.createElement('input');inp.type='file';inp.accept='video/*';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;b.textContent='Uploading…';b.disabled=true;try{const v=await upVideo(f);const r=await sb.from('reels').update(v).eq('id',b.dataset.av);if(r.error)throw r.error;admin()}catch(er){b.disabled=false;b.textContent='Add video';warn(hint(er))}};inp.click()}
+    else if(b.dataset.ac){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;b.textContent='Uploading…';b.disabled=true;try{const poster_url=await upCover(f);const r=await sb.from('reels').update({poster_url}).eq('id',b.dataset.ac);if(r.error)throw r.error;admin()}catch(er){b.disabled=false;b.textContent='Add cover';warn(hint(er))}};inp.click()}};
 }
 
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
